@@ -73,7 +73,7 @@ export default {
       this.fetchPowerFlow();
     },
     fetchPowerFlow() {
-      fetch(API.BASE_URL + API.FLOW + "/")
+      fetch(API.PROXY_URL + API.BASE_URL + API.FLOW + "/")
         .then((response) => response.json())
         .then((res) => {
           const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
@@ -87,7 +87,7 @@ export default {
         .catch((err) => console.log(err));
     },
     fetchBatteryData() {
-      fetch(API.BASE_URL + API.BATTERY + "/")
+      fetch(API.PROXY_URL + API.BASE_URL + API.BATTERY + "/")
         .then((response) => response.json())
         .then((res) => {
           const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
@@ -98,7 +98,7 @@ export default {
     },
     fetchData1() {
       console.log("Fetching data...");
-      fetch(API.BASE_URL + API.INVERTER + "/")
+      fetch(API.PROXY_URL + API.BASE_URL + API.INVERTER + "/")
         .then((response) => response.json())
         .then((res) => {
           const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
@@ -109,7 +109,7 @@ export default {
     },
     fetchData2() {
       console.log("Fetching data...");
-      fetch(API.BASE_URL + API.METER + "/")
+      fetch(API.PROXY_URL + API.BASE_URL + API.METER + "/")
         .then((response) => response.json())
         .then((res) => {
           const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
