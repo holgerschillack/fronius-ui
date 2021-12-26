@@ -1,9 +1,5 @@
 export const BASE_URL = "/api/solar_api/v1/";
 
-// 192.168.178.36/solar_api/v1/GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData
-// 192.168.178.36/solar_api/v1/GetStorageRealtimeData.cgi
-// 192.168.178.36/solar_api/v1/GetPowerFlowRealtimeData.fcgi <--- beste
-
 export const INVERTER =
   "GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData";
 export const METER = "GetMeterRealtimeData.cgi";
