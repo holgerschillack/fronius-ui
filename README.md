@@ -5,7 +5,7 @@ Die Anzeige aktualisiert sich alle 3 Sekunden oder die Aktualisierung kann per B
 
 ## Screenshot
 
-![Fronius UI Screenshot"](screenshots/fronius-ui.png)
+![Fronius UI Screenshot"](screenshots/fronius-ui.png){:width="200px"}
 
 ## Installation
 
