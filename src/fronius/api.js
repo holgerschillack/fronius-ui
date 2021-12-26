@@ -1,4 +1,4 @@
-export const BASE_URL = "/solar_api/v1/";
+export const BASE_URL = "http://192.168.178.36/solar_api/v1/";
 export const PROXY_URL = "http://192.168.178.116:5050";
 
 export const INVERTER =
