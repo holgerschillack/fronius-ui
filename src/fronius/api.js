@@ -1,5 +1,5 @@
 export const BASE_URL = "/solar_api/v1/";
-export const PROXY_URL = "http://localhost:5050";
+export const PROXY_URL = "http://localhost:5051";
 
 export const INVERTER =
   "GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData";
