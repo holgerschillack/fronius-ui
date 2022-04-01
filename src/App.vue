@@ -27,6 +27,15 @@
             <p class="text-xl">Akku Ladezustand:</p>
             <p class="text-xl">{{ `${akkuSoc} %` }}</p>
           </div>
+          <br />
+          <div class="flex justify-between space-x-6">
+            <p class="text-xl">Zeit bis Akku {{ pAkku > 0 ? "voll" : "leer" }}:</p>
+            <p class="text-xl">{{ timeLeft }}</p>
+          </div>
+          <div class="flex justify-between space-x-6">
+            <p class="text-xl">Erreicht um:</p>
+            <p class="text-xl">{{ reach100 }}</p>
+          </div>
         </div>
 
         <button
@@ -54,11 +63,13 @@ export default {
       akkuSoc: 0,
       akkuTime: 0,
       akkuTarget: 0,
+      timeLeft: "",
+      reach100: "",
     };
   },
   created() {
     this.fetchData();
-    this.timer = setInterval(this.fetchData, 3000);
+    this.timer = setInterval(this.fetchData, 2500);
   },
   beforeDestroy() {
     this.cancelAutoUpdate();
@@ -71,6 +82,7 @@ export default {
       console.log("Fetching data...");
       this.fetchBatteryData();
       this.fetchPowerFlow();
+      this.calcTime();
     },
     fetchPowerFlow() {
       fetch(API.PROXY_URL + API.BASE_URL + API.FLOW + "/")
@@ -78,7 +90,6 @@ export default {
         .then((res) => {
           const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
           const data = res.Body.Data.Site;
-          console.log("Status:", status);
           this.pAkku = ((-1 * Math.round(data.P_Akku)) / 1000).toFixed(2);
           this.pGrid = (Math.round(data.P_Grid) / 1000).toFixed(2);
           this.pLoad = ((-1 * Math.round(data.P_Load)) / 1000).toFixed(2);
@@ -91,32 +102,42 @@ export default {
         .then((response) => response.json())
         .then((res) => {
           const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
-          console.log("Status:", status);
           this.akkuSoc = res.Body.Data[0].Controller.StateOfCharge_Relative;
         })
         .catch((err) => console.log(err));
     },
-    fetchData1() {
-      console.log("Fetching data...");
-      fetch(API.PROXY_URL + API.BASE_URL + API.INVERTER + "/")
-        .then((response) => response.json())
-        .then((res) => {
-          const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
-          console.log("Status:", status);
-          console.log(res.Body.Data);
-        })
-        .catch((err) => console.log(err));
+    calcTime() {
+      if (this.pAkku > 0) {
+        // charging
+        const kwhTo100 = 7.68 - (this.akkuSoc / 100) * 7.68;
+        const secondsTo100 = Math.round((kwhTo100 / this.pAkku) * 3600);
+        this.timeLeft = this.secondsToHms(secondsTo100);
+        const t = new Date();
+        t.setSeconds(t.getSeconds() + secondsTo100);
+        this.reach100 = `${t.getHours()}:${
+          t.getMinutes() < 10 ? `0${t.getMinutes()}` : t.getMinutes()
+        } Uhr`;
+      } else {
+        // decharging
+        const kwhTo0 = (this.akkuSoc / 100 - 0.05) * 7.68; // 5% reserve
+        const secondsTo0 = Math.round((kwhTo0 / this.pAkku) * 3600);
+        this.timeLeft = this.secondsToHms(secondsTo0);
+        const t = new Date();
+        t.setSeconds(t.getSeconds() + secondsTo0);
+        this.reach100 = `${t.getHours()}:${
+          t.getMinutes() < 10 ? `0${t.getMinutes()}` : t.getMinutes()
+        } Uhr`;
+      }
     },
-    fetchData2() {
-      console.log("Fetching data...");
-      fetch(API.PROXY_URL + API.BASE_URL + API.METER + "/")
-        .then((response) => response.json())
-        .then((res) => {
-          const status = API.HEADER_STATUS_CODES[res.Head.Status.Code];
-          console.log("Status:", status);
-          console.log(res.Body.Data);
-        })
-        .catch((err) => console.log(err));
+    secondsToHms(d) {
+      d = Number(d);
+      var h = Math.floor(d / 3600);
+      var m = Math.floor((d % 3600) / 60);
+      if (h > 24) return "Länger als 1 Tag";
+      var hDisplay = h > 0 ? h + " h " : "";
+      var mDisplay = m > 0 ? m + " min" : "";
+
+      return hDisplay + mDisplay;
     },
   },
 };
