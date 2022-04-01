@@ -6,7 +6,7 @@
           <div class="text-3xl mb-4">PV-Anlage Übersicht</div>
         </div>
 
-        <div class="py-8 text-base leading-6 space-y-4 text-gray-700">
+        <div class="py-8 text-base leading-6 space-y-4 text-gray-700 w-[360px]">
           <div class="flex justify-between space-x-6">
             <p class="text-xl">PV Erzeugung:</p>
             <p class="text-xl">{{ `${pPV} kW` }}</p>
@@ -37,13 +37,14 @@
             <p class="text-xl">{{ reach100 }}</p>
           </div>
         </div>
-
-        <button
-          class="bg-cyan-600 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded"
-          @click="this.fetchData"
-        >
-          Aktualisieren
-        </button>
+        <div class="flex justify-center">
+          <button
+            class="bg-cyan-600 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded w-[180px]"
+            @click="this.fetchData"
+          >
+            Aktualisieren
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -63,8 +64,8 @@ export default {
       akkuSoc: 0,
       akkuTime: 0,
       akkuTarget: 0,
-      timeLeft: "",
-      reach100: "",
+      timeLeft: "-",
+      reach100: "-",
     };
   },
   created() {
@@ -107,6 +108,7 @@ export default {
         .catch((err) => console.log(err));
     },
     calcTime() {
+      if (this.pAkku === 0 || this.akkuSoc === 0) return;
       if (this.pAkku > 0) {
         // charging
         const kwhTo100 = 7.68 - (this.akkuSoc / 100) * 7.68;
@@ -120,7 +122,7 @@ export default {
       } else {
         // decharging
         const kwhTo0 = (this.akkuSoc / 100 - 0.05) * 7.68; // 5% reserve
-        const secondsTo0 = Math.round((kwhTo0 / this.pAkku) * 3600);
+        const secondsTo0 = Math.round((kwhTo0 / Math.abs(this.pAkku)) * 3600);
         this.timeLeft = this.secondsToHms(secondsTo0);
         const t = new Date();
         t.setSeconds(t.getSeconds() + secondsTo0);
