@@ -6,7 +6,7 @@
           <div class="text-3xl mb-4">PV-Anlage Übersicht</div>
         </div>
 
-        <div class="py-8 text-base leading-6 space-y-4 text-gray-700 w-[360px]">
+        <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:w-[360px]">
           <div class="flex justify-between space-x-6">
             <p class="text-xl">PV Erzeugung:</p>
             <p class="text-xl">{{ `${pPV} kW` }}</p>
